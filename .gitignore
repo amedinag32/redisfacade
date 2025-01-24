@@ -1,0 +1,6 @@
+.prod.env
+__pycache__
+*/__pycache__
+venv
+.pypirc
+__main__.py
