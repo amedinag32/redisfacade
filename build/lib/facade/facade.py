@@ -11,14 +11,14 @@ class RedisFacade:
     def __init__(self, REDIS_HOST: str = getenv("REDIS_HOST"), REDIS_PORT: int = getenv("REDIS_PORT"), REDIS_PASSWORD: str = getenv("REDIS_PASSWORD")):
         self.redis_manager = RedisSingleton(REDIS_HOST=REDIS_HOST, REDIS_PORT=REDIS_PORT, REDIS_PASSWORD=REDIS_PASSWORD)
 
-    def set_key_value(self, db: int, key: str, value: Any, ttl: timedelta) -> bool: 
+    def set_key_value(self, db: int, key:str, value: Any) -> bool: 
         """
             Guarda un valor del tipo key - value de base de datos.
         """       
         
-        return self.redis_manager.get_connection(db).set(name=key, value=value, ex=ttl)
+        return self.redis_manager.get_connection(db).set(name=key, value=value, ex=timedelta(days=3))
         
-    def get_key_value(self, db: int, key: str) -> Any: 
+    def get_key_value(self, db: int, key:str) -> Any: 
         """
             Obtiene un valor del tipo key - value de base de datos.
         """       
@@ -46,12 +46,12 @@ class RedisFacade:
     def len_list(self, db: int, list_name: str) -> str:
         return self.redis_manager.get_connection(db).llen(list_name)
     
-    def set_json_data(self, db: int, json_name, json_key, json_data: Any, ttl: timedelta) -> bool:
+    def set_json_data(self, db: int, json_name, json_key, json_data: Any) -> bool:
         is_saved: bool = False
         if isinstance(json_data, dict):
-            is_saved = self.redis_manager.get_connection(db).set((json_name + ":" + json_key), dumps(json_data), ex=ttl)
+            is_saved = self.redis_manager.get_connection(db).set((json_name + ":" + json_key), dumps(json_data))
         else:
-            is_saved = self.redis_manager.get_connection(db).set((json_name + ":" + json_key), json_data, ex=ttl)
+            is_saved = self.redis_manager.get_connection(db).set((json_name + ":" + json_key), json_data)
             
         return is_saved
         
