@@ -1,6 +1,5 @@
 from redis import Redis, ConnectionError, TimeoutError
 from threading import Lock
-from os import getenv
 
 class RedisSingleton:
     _instance = None

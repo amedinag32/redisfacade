@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='redisfacade',
-    version='1.0.1',
+    version='1.0.5',
     description='A package to implement a facade for accessing Redis databases',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -17,7 +17,6 @@ setup(
     ],
     python_requires='>=3.8',
     install_requires=[
-        'async-timeout==5.0.1',
         'redis==5.2.1'
     ],
 )

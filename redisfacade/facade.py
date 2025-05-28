@@ -59,6 +59,8 @@ class RedisFacade:
         retrieved_json = self.redis_manager.get_connection(db).get((json_name + ":" + json_key))
         if isinstance(retrieved_json, dict):
             return loads(retrieved_json)  # Convert JSON string back to a Python dictionary
+        if retrieved_json == None:
+            return None
         else:
             return retrieved_json.decode("utf-8")
     
@@ -73,7 +75,47 @@ class RedisFacade:
             if retrieved_json:  # Verificar si el valor existe
                 if isinstance(retrieved_json, dict):
                     data[key] = loads(retrieved_json)
+                if retrieved_json == None:
+                    data[key] = None
                 else:
                     data[key] = retrieved_json.decode('utf-8')
 
         return data
+    
+    def set_set_list(self, db: int, set_name: str, items: List[str] = []) -> bool:
+        try:
+            for item in items:
+                self.redis_manager.get_connection(db).sadd(set_name, item)    
+            return True
+        except Exception as e:
+            print("Error al almacenar datos de lista:", e)
+            return False
+        
+    def get_set_list(self, db: int, set_name: str, items: List[str] = []) -> List[str]:
+        try:
+            list_data: List[str] = []
+            data = self.redis_manager.get_connection(db).smembers(set_name)
+            for d in data:
+                list_data.append(d.decode('utf-8'))
+                return list_data
+        except Exception as e:
+            print("Error al almacenar datos de lista:", e)
+            return []
+        
+    def delete_set_list(self, db: int, set_name: str, item: str) -> bool:
+        try:
+            self.redis_manager.get_connection(db).srem(set_name, item)
+            return True
+        except Exception as e:
+            print("Error al almacenar datos de lista:", e)
+            return False
+    
+    def exist_item_set_list(self, db: int, set_name: str, item: str) -> bool:
+        try:
+            if self.redis_manager.get_connection(db).sismember(set_name, item):
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Error al almacenar datos de lista:", e)
+            return False
