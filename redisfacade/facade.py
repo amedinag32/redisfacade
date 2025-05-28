@@ -91,7 +91,7 @@ class RedisFacade:
             print("Error al almacenar datos de lista:", e)
             return False
         
-    def get_set_list(self, db: int, set_name: str, items: List[str] = []) -> List[str]:
+    def get_set_list(self, db: int, set_name: str) -> List[str]:
         try:
             list_data: List[str] = []
             data = self.redis_manager.get_connection(db).smembers(set_name)
